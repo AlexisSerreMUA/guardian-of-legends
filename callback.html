@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>TikTok Auth Callback</title>
+  <style>
+    body { font-family: sans-serif; background: #0a0a0a; color: white; padding: 2rem; }
+    h1 { color: #22c55e; }
+    .code { background: #111; padding: 1rem; border-radius: 8px; font-family: monospace; font-size: 1.2rem; word-break: break-all; }
+    button { margin-top: 1rem; padding: 0.8rem 1.5rem; background: #22c55e; color: black; border: none; border-radius: 8px; font-size: 1rem; cursor: pointer; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <h1>✅ Autorisation TikTok réussie</h1>
+  <p>Copie ce code et colle-le dans le terminal :</p>
+  <div class="code" id="code"></div>
+  <button onclick="copy()">📋 Copier le code</button>
+
+  <script>
+    const params = new URLSearchParams(window.location.search)
+    const code = params.get('code')
+    const error = params.get('error')
+
+    if (error) {
+      document.querySelector('h1').textContent = '❌ Erreur : ' + error
+      document.querySelector('h1').style.color = '#ef4444'
+    } else if (code) {
+      document.getElementById('code').textContent = code
+    } else {
+      document.querySelector('h1').textContent = '❌ Pas de code reçu'
+    }
+
+    function copy() {
+      navigator.clipboard.writeText(code)
+      document.querySelector('button').textContent = '✅ Copié !'
+    }
+  </script>
+</body>
+</html>
