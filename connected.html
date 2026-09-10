@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Connecté — Guardian of Legends</title>
+  <link rel="icon" href="/icon.png">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0 }
+    body { font-family: -apple-system, 'Helvetica Neue', sans-serif; background: #0a0a0a; color: #fff; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+    .card { text-align: center; padding: 40px; max-width: 420px; }
+    .logo { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 32px; }
+    .logo img { width: 32px; height: 32px; border-radius: 8px; }
+    .logo span { font-weight: 800; font-size: 16px; }
+    h1 { font-size: 24px; margin-bottom: 12px; }
+    p { color: #888; font-size: 14px; margin-bottom: 32px; line-height: 1.6; }
+    button { background: #FFD700; color: #000; border: none; border-radius: 10px; padding: 14px 32px; font-weight: 700; font-size: 15px; cursor: pointer; width: 100%; }
+    button:disabled { opacity: 0.6; cursor: default; }
+    #status { margin-top: 20px; font-size: 13px; color: #666; word-break: break-word; }
+    #status.success { color: #22c55e; }
+    #status.error { color: #ef4444; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="logo">
+      <img src="/icon.png" alt="Guardian of Legends">
+      <span>Guardian of Legends</span>
+    </div>
+    <h1>✅ Compte TikTok connecté</h1>
+    <p>Tu peux maintenant publier le carrousel de démonstration sur ton compte TikTok (sandbox, visible uniquement par toi).</p>
+    <button id="publishBtn" onclick="publish()">Publier le carrousel</button>
+    <div id="status"></div>
+  </div>
+
+  <script>
+    async function publish() {
+      const btn = document.getElementById('publishBtn')
+      const status = document.getElementById('status')
+      btn.disabled = true
+      btn.textContent = 'Publication en cours…'
+      status.className = ''
+      status.textContent = ''
+
+      try {
+        const res = await fetch('/api/tiktok/publish', { method: 'POST' })
+        const data = await res.json()
+
+        if (data.success) {
+          status.className = 'success'
+          status.textContent = '✅ Publié ! publish_id: ' + data.publish_id
+          btn.textContent = 'Publié'
+        } else {
+          status.className = 'error'
+          status.textContent = '❌ ' + (data.error || 'Erreur inconnue')
+          btn.disabled = false
+          btn.textContent = 'Réessayer'
+        }
+      } catch (err) {
+        status.className = 'error'
+        status.textContent = '❌ ' + err.message
+        btn.disabled = false
+        btn.textContent = 'Réessayer'
+      }
+    }
+  </script>
+</body>
+</html>
